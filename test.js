@@ -1,8 +1,8 @@
 const ffi = require('ffi')
-const { LIB } = require('.')
+const { DIR, NAME } = require('.')
 
 // just for testing purposes (incomplete & wrong)
-const glfw = ffi.Library(LIB, {
+const glfw = ffi.Library(`${DIR}/${NAME}`, {
   glfwInit: ['void', []],
   glfwCreateWindow: ['void', ['int', 'int', 'string', 'int', 'int']],
   glfwPollEvents: ['void', []]

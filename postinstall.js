@@ -1,33 +1,47 @@
-// download glfw binaries & extract the dylib into `target/`
-
-const assert = require('assert')
-const os = require('os')
+const cp = require('child_process')
 const fetch = require('node-fetch')
 const fs = require('fs')
+const path = require('path')
 const AdmZip = require('adm-zip')
-const { VERSION } = require('.')
+const { VERSION, NAME } = require('.')
 
-// TODO: others
-assert.equal(os.platform(), 'darwin', 'Only macos is supported ATM')
+const log = (...args) => console.log('[glfw]', ...args)
 
-const DIR = `${__dirname}/target`
-const ZIP_FILE = `${DIR}/glfw.zip`
-const URL = `https://github.com/glfw/glfw/releases/download/${VERSION}/glfw-${VERSION}.bin.MACOS.zip`
+switch (process.platform) {
+  case 'linux':
+    if (cp.execSync('ldconfig -p | grep libglfw', { encoding: 'utf-8' })) {
+      log('ok, system lib found')
+      break
+    }
 
-if (!fs.existsSync(DIR)) {
-  fs.mkdirSync(DIR)
+    throw new Error('You need to install glfw using your system package manager')
+
+  case 'darwin':
+    download('MACOS', 'lib-macos')
+    break
+
+  case 'win32':
+    download(process.arch === 'x64' ?'WIN64' :'WIN32', 'lib-vc2010')
+    break
 }
 
-if (fs.existsSync(ZIP_FILE)) {
-  return console.log('up-to-date')
+function download(platform, zipPath) {
+  const zipName = `glfw-${VERSION}.bin.${platform}`
+  const zipUrl = `https://github.com/glfw/glfw/releases/download/${VERSION}/${zipName}.zip`
+  const zipFile = `${__dirname}/glfw-release.zip`
+
+  if (fs.existsSync(`${__dirname}/${NAME}`)) {
+    log('up-to-date')
+    return
+  }
+
+  log(`downloading ${zipUrl} to ${zipFile}`)
+  fetch(zipUrl).then(res =>
+    res.body.pipe(fs.createWriteStream(zipFile)).on('close', () => {
+      const zip = new AdmZip(zipFile)
+
+      log(`extracting ${NAME}`)
+      zip.extractEntryTo(`${zipName}/${zipPath}/${NAME}`, __dirname, false)
+    })
+  )
 }
-
-console.log(`downloading ${URL}`)
-fetch(URL).then(res =>
-  res.body.pipe(fs.createWriteStream(ZIP_FILE)).on('close', () => {
-    const zip = new AdmZip(ZIP_FILE)
-
-    console.log(`extracting to ${DIR}`)
-    zip.extractAllTo(DIR, true)
-  })
-)
