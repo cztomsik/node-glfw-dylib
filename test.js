@@ -1,8 +1,11 @@
 const ffi = require('ffi')
 const { DIR, NAME } = require('.')
 
+// good enough for testing
+process.chdir(DIR)
+
 // just for testing purposes (incomplete & wrong)
-const glfw = ffi.Library(`${DIR}/${NAME}`, {
+const glfw = ffi.Library(NAME, {
   glfwInit: ['void', []],
   glfwCreateWindow: ['void', ['int', 'int', 'string', 'int', 'int']],
   glfwPollEvents: ['void', []]
