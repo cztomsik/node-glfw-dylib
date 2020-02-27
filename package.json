@@ -10,10 +10,11 @@
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "devDependencies": {},
+  "devDependencies": {
+    "ffi-napi": "^2.4.6"
+  },
   "dependencies": {
     "adm-zip": "^0.4.14",
-    "ffi-napi": "^2.4.6",
     "node-fetch": "^2.6.0"
   }
 }
