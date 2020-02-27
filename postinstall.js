@@ -21,7 +21,7 @@ switch (process.platform) {
     break
 
   case 'win32':
-    download(process.arch === 'x64' ?'WIN64' :'WIN32', 'lib-vc2012')
+    download(process.arch === 'x64' ?'WIN64' :'WIN32', 'lib-vc2015')
     break
 }
 
