@@ -1,5 +1,5 @@
 {
-  "name": "node-glfw-dylib",
+  "name": "glfw-dylib",
   "version": "3.3.2",
   "description": "download glfw dynamic library from their official release channel",
   "main": "index.js",
