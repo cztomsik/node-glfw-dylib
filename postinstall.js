@@ -9,7 +9,7 @@ const log = (...args) => console.log('[glfw]', ...args)
 
 switch (process.platform) {
   case 'linux':
-    if (cp.execSync('ldconfig -p | grep libglfw', { encoding: 'utf-8' })) {
+    if (cp.execSync('ldconfig -p | grep libglfw || :', { encoding: 'utf-8' })) {
       log('ok, system lib found')
       break
     }
