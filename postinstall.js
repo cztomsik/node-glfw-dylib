@@ -1,3 +1,4 @@
+const assert = require('assert')
 const cp = require('child_process')
 const fetch = require('node-fetch')
 const fs = require('fs')
@@ -9,12 +10,14 @@ const log = (...args) => console.log('[glfw]', ...args)
 
 switch (process.platform) {
   case 'linux':
-    if (cp.execSync('ldconfig -p | grep libglfw || :', { encoding: 'utf-8' })) {
+    try {
+      assert.ok(cp.execSync('ldconfig -p | grep libglfw || :', { encoding: 'utf-8' }))
       log('ok, system lib found')
-      break
+    } catch (e) {
+      console.warn(e)
+      console.warn('You may need to install glfw using your system package manager')
     }
-
-    throw new Error('You need to install glfw using your system package manager')
+    break
 
   case 'darwin':
     download('MACOS', 'lib-macos')
